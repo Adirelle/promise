@@ -12,6 +12,8 @@ class Promise implements ExtendedPromiseInterface, CancellablePromiseInterface
 
     private $requiredCancelRequests = 0;
     private $cancelRequests = 0;
+    private $cancelHandlers = [];
+    private $cancelled = false;
 
     public function __construct(callable $resolver, callable $canceller = null)
     {
@@ -87,11 +89,35 @@ class Promise implements ExtendedPromiseInterface, CancellablePromiseInterface
 
     public function cancel()
     {
-        if (null === $this->canceller || null !== $this->result) {
+        if (null !== $this->result) {
             return;
         }
 
-        $this->call($this->canceller);
+        $this->cancelled = true;
+        $handlers = $this->cancelHandlers;
+        $this->cancelHandlers = [];
+
+        if (null !== $this->canceller) {
+            $this->call($this->canceller);
+        }
+
+        foreach ($handlers as $handler) {
+            $handler();
+        }
+    }
+
+    public function cancelled(callable $onCancel)
+    {
+        if (null !== $this->result) {
+            return;
+        }
+
+        if ($this->cancelled) {
+            $onCancel();
+            return;
+        }
+
+        $this->cancelHandlers[] = $onCancel;
     }
 
     private function resolver(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)

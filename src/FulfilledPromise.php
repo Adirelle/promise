@@ -63,4 +63,8 @@ class FulfilledPromise implements ExtendedPromiseInterface, CancellablePromiseIn
     public function cancel()
     {
     }
+
+    public function cancelled(callable $onCancel)
+    {
+    }
 }

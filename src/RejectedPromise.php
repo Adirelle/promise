@@ -71,4 +71,8 @@ class RejectedPromise implements ExtendedPromiseInterface, CancellablePromiseInt
     public function cancel()
     {
     }
+
+    public function cancelled(callable $onCancel)
+    {
+    }
 }

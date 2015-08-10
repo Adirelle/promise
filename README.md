@@ -28,6 +28,7 @@ Table of Contents
         * [ExtendedPromiseInterface::progress()](#extendedpromiseinterfaceprogress)
    * [CancellablePromiseInterface](#cancellablepromiseinterface)
         * [CancellablePromiseInterface::cancel()](#cancellablepromiseinterfacecancel)
+        * [CancellablePromiseInterface::cancelled()](#cancellablepromiseinterfacecancelled)
    * [Promise](#promise-1)
    * [FulfilledPromise](#fulfilledpromise)
    * [RejectedPromise](#rejectedpromise)
@@ -347,6 +348,17 @@ further interest in the results of the operation.
 
 Once a promise is settled (either fulfilled or rejected), calling `cancel()` on
 a promise has no effect.
+
+
+#### CancellablePromiseInterface::cancelled()
+
+``` php
+$promise->cancelled(callable $onCancel);
+```
+
+Registers a cancellation handler for promise. This handler will be invoked when (or if)
+the promise is (has been) effectively cancelled by `cancel()`. The cancellation handlers
+are invoked after the own canceller of the promise.
 
 #### Implementations
 

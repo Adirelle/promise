@@ -42,6 +42,11 @@ class LazyPromise implements ExtendedPromiseInterface, CancellablePromiseInterfa
         return $this->promise()->cancel();
     }
 
+    public function cancelled(callable $onCancel)
+    {
+        return $this->promise()->cancelled($onCancel);
+    }
+
     private function promise()
     {
         if (null === $this->promise) {

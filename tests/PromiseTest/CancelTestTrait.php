@@ -203,4 +203,39 @@ trait CancelTestTrait
 
         $adapter->promise()->cancel();
     }
+
+    /** @test */
+    public function cancelShouldCallAllCancelledCallbacks()
+    {
+        $adapter = $this->getPromiseTestAdapter($this->expectCallableOnce());
+
+        $adapter->promise()->cancelled($this->expectCallableOnce());
+        $adapter->promise()->cancelled($this->expectCallableOnce());
+
+        $adapter->promise()->cancel();
+    }
+
+    /** @test */
+    public function cancelledShouldCallAllCallbacksForCancelledPromise()
+    {
+        $adapter = $this->getPromiseTestAdapter($this->expectCallableOnce());
+
+        $adapter->promise()->cancel();
+
+        $adapter->promise()->cancelled($this->expectCallableOnce());
+    }
+
+    /** @test */
+    public function cancelOnChildrenShouldCallCancelledCallback()
+    {
+        $adapter = $this->getPromiseTestAdapter($this->expectCallableOnce());
+
+        $child1 = $adapter->promise()
+            ->then()
+            ->then();
+
+        $adapter->promise()->cancelled($this->expectCallableOnce());
+
+        $child1->cancel();
+    }
 }
